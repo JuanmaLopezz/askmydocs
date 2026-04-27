@@ -74,8 +74,10 @@ with col_right:
     )
     top_k = st.slider("Fuentes a consultar", 2, 10, 4, help="Cuántos fragmentos de los documentos se analizan para generar la respuesta. Más fuentes = respuesta más completa pero más lenta.")
 
-    if st.button("Preguntar", type="primary", disabled=not question.strip()):
-        if not docs:
+    if st.button("Preguntar", type="primary"):
+        if not question.strip():
+            st.warning("Escribe una pregunta antes de continuar.")
+        elif not docs:
             st.warning("Sube al menos un documento antes de preguntar.")
         else:
             with st.spinner("Consultando..."):
