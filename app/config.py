@@ -10,6 +10,8 @@ class Settings(BaseSettings):
     app_env: str = "development"
     max_file_size_mb: int = 50
     supported_extensions: str = "pdf,docx,xlsx,txt"
+    port: int = 8000
+    host: str = "0.0.0.0"
 
     class Config:
         env_file = ".env"

@@ -1,5 +1,7 @@
+from __future__ import annotations
 from pydantic import BaseModel
 from datetime import datetime
+from typing import Optional
 
 
 class DocumentResponse(BaseModel):
@@ -16,7 +18,7 @@ class QueryRequest(BaseModel):
 
 class Source(BaseModel):
     document: str
-    page: int | None
+    page: Optional[int]
     chunk: str
 
 

@@ -1,3 +1,4 @@
+from __future__ import annotations
 from langchain_core.callbacks import BaseCallbackHandler
 from app.config import settings
 
