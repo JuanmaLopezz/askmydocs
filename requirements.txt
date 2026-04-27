@@ -22,7 +22,7 @@ openpyxl==3.1.5
 unstructured==0.15.0
 
 # Observability
-langfuse==2.36.0
+langfuse>=3.0.0
 
 # UI
 streamlit==1.38.0

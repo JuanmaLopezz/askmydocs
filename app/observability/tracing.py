@@ -1,4 +1,5 @@
 from __future__ import annotations
+import os
 from langchain_core.callbacks import BaseCallbackHandler
 from app.config import settings
 
@@ -9,11 +10,10 @@ def get_langfuse_callback() -> BaseCallbackHandler | None:
     if not pk or pk.startswith("pk-lf-...") or not sk or sk.startswith("sk-lf-..."):
         return None
     try:
-        from langfuse.callback import CallbackHandler
-        return CallbackHandler(
-            public_key=pk,
-            secret_key=sk,
-            host=settings.langfuse_host,
-        )
+        os.environ["LANGFUSE_PUBLIC_KEY"] = pk
+        os.environ["LANGFUSE_SECRET_KEY"] = sk
+        os.environ["LANGFUSE_HOST"] = settings.langfuse_host
+        from langfuse.langchain import CallbackHandler
+        return CallbackHandler()
     except Exception:
         return None
