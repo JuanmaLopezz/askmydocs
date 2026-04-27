@@ -178,10 +178,13 @@ Swagger en: http://localhost:8000/docs
 
 ## Estado de cobertura por fase
 
-| Fase | Pytest | Manual |
-|------|--------|--------|
-| A — Ingestión | ✅ `test_ingestion.py` | Pendiente ejecución |
-| B — RAG | ✅ `test_retrieval.py` | Pendiente ejecución |
-| C — CRUD API | ✅ `test_api.py` | Pendiente ejecución |
-| D — LangFuse | N/A (integración externa) | Pendiente ejecución |
-| E — Docker/UI | N/A | Pendiente ejecución |
+| Fase | Pytest | Manual | Fecha |
+|------|--------|--------|-------|
+| A — Ingestión | ✅ 5/5 passing | ✅ Verificado 2026-04-27 | 2026-04-27 |
+| B — RAG | ✅ 3/3 passing | ✅ Verificado 2026-04-27 | 2026-04-27 |
+| C — CRUD API | ✅ 7/7 passing | ✅ Verificado 2026-04-27 | 2026-04-27 |
+| D — LangFuse | N/A (integración externa) | Pendiente — requiere keys reales | — |
+| E — Docker/UI | N/A | ✅ UI local verificada 2026-04-27 | 2026-04-27 |
+
+**Total pytest: 15/15 passing**
+**Total manual ejecutados: 10/10 ✅ (excl. Docker y LangFuse)**
