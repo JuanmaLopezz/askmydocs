@@ -1,65 +1,149 @@
 # AskMyDocs
 
-Herramienta de inteligencia documental universal. Sube documentos (PDF, Word, Excel, TXT) y hazles preguntas en lenguaje natural — respuestas precisas con la fuente exacta citada.
+Sube cualquier documento (PDF, Word, Excel, TXT) y hazle preguntas en lenguaje natural. Respuestas precisas con la fuente exacta citada — página incluida.
 
-## Stack
+Proyecto portfolio de Data AI Engineering. Demuestra un stack RAG completo en producción.
 
-- Python 3.11 + FastAPI + LangChain + ChromaDB + LangFuse + Streamlit + Docker
-- Claude API (Anthropic) como LLM principal
+---
 
-## Requisitos
+## Demo
 
-- Python 3.11+
-- Docker y docker-compose
-- API keys: Anthropic + LangFuse (tier gratuito en cloud.langfuse.com)
+**Subir documento → preguntar → respuesta con fuente citada**
 
-## Instalación
+```
+POST /documents/upload  →  { "id": "...", "filename": "informe.pdf", "chunks": 6 }
+POST /query             →  { "answer": "La facturación fue 487.320 EUR [informe.pdf, p.1]",
+                             "sources": [{ "document": "informe.pdf", "page": 1, "chunk": "..." }] }
+```
+
+---
+
+## Stack técnico
+
+| Capa | Tecnología |
+|------|------------|
+| LLM | Claude Sonnet (Anthropic API) |
+| Orquestación | LangChain 0.3 + LCEL |
+| Vector store | ChromaDB (local, persistente) |
+| Embeddings | `all-MiniLM-L6-v2` (HuggingFace, local) |
+| API | FastAPI + Pydantic v2 |
+| Observabilidad | LangFuse v3 (tokens, coste, latencia por query) |
+| UI | Streamlit |
+| Infra | Docker + docker-compose |
+
+---
+
+## Arquitectura RAG
+
+```
+Documento (PDF/DOCX/XLSX/TXT)
+    │
+    ▼
+Loaders (LangChain)  →  Chunker (1000 tokens, overlap 200)
+    │
+    ▼
+Embeddings (all-MiniLM-L6-v2)  →  ChromaDB (persistente en ./data/chroma)
+    │
+    ▼
+Query  →  Retriever (top-k semántico)  →  Prompt  →  Claude  →  Respuesta + Fuentes
+                                                          │
+                                                          ▼
+                                                    LangFuse (traza completa)
+```
+
+---
+
+## Instalación local
+
+**Requisitos:** Python 3.9+, API key de Anthropic
 
 ```bash
 git clone https://github.com/JuanmaLopezz/askmydocs.git
 cd askmydocs
 
 cp .env.example .env
-# Editar .env con las API keys reales
+# Añadir ANTHROPIC_API_KEY en .env
+# (Opcional) Añadir LANGFUSE_PUBLIC_KEY y LANGFUSE_SECRET_KEY para observabilidad
 
 pip install -r requirements.txt
-```
 
-## Uso rápido (Docker)
-
-```bash
-docker-compose up
-```
-
-Acceder a:
-- API: http://localhost:8000/docs
-- UI: http://localhost:8501
-
-## Uso local (desarrollo)
-
-```bash
-# API
+# Terminal 1 — API
 uvicorn app.main:app --reload
 
-# UI (terminal separada)
+# Terminal 2 — UI
 streamlit run app/ui/streamlit_app.py
 ```
 
-## Estructura del proyecto
+- API + Swagger: http://localhost:8000/docs
+- UI: http://localhost:8501
 
-Ver `CLAUDE.md` para documentación completa de arquitectura y fases.
+---
 
-## Estado del proyecto
+## Docker
 
-- [ ] Fase A — Ingestión de documentos
-- [ ] Fase B — Motor de preguntas
-- [ ] Fase C — API REST
-- [ ] Fase D — Observabilidad LangFuse
-- [ ] Fase E — Interfaz y Docker
+```bash
+docker-compose up --build
+```
+
+- API: http://localhost:8000/docs
+- UI: http://localhost:8501
+
+---
+
+## Tests
+
+```bash
+pytest tests/ -v
+# 15/15 passing
+```
+
+---
+
+## Endpoints
+
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| `GET` | `/health` | Estado de la API |
+| `POST` | `/documents/upload` | Subir e indexar documento |
+| `GET` | `/documents/` | Listar documentos indexados |
+| `DELETE` | `/documents/{id}` | Eliminar documento y sus chunks |
+| `POST` | `/query` | Preguntar sobre los documentos |
+
+---
+
+## Estructura
+
+```
+app/
+├── api/routes/        # Endpoints FastAPI
+├── ingestion/         # Loaders, chunker, embeddings
+├── retrieval/         # Retriever, prompt, cadena RAG
+├── observability/     # LangFuse tracing
+├── storage/           # Registry de documentos (JSON)
+└── ui/                # Streamlit app
+tests/                 # 15 tests unitarios
+docs/                  # Roadmap, arquitectura, batería de pruebas
+```
+
+---
+
+## Fases completadas
+
+- ✅ Fase A — Ingestión (PDF, DOCX, XLSX, TXT → ChromaDB)
+- ✅ Fase B — Motor RAG (retrieval semántico + Claude + fuentes citadas)
+- ✅ Fase C — API REST completa (CRUD documentos + queries)
+- ✅ Fase D — Observabilidad LangFuse (tokens, coste, latencia por query)
+- ✅ Fase E — UI Streamlit + Docker
+
+---
 
 ## Autor
 
-[Juanma López Tech](https://github.com/JuanmaLopezz) — portfolio de Data AI Engineering
+**Juanma López** — [GitHub](https://github.com/JuanmaLopezz) · [LinkedIn](https://linkedin.com/in/juanmalopez)
+
+Data AI Engineer en construcción. Este proyecto es parte de mi portfolio de transición hacia roles de AI Engineering.
+
+---
 
 ## Licencia
 
