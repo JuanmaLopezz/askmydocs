@@ -3,6 +3,7 @@ from langchain_core.output_parsers import StrOutputParser
 from app.api.schemas import QueryResponse, Source
 from app.config import settings
 from app.ingestion.embeddings import COLLECTION_NAME
+from app.observability.tracing import get_langfuse_callback
 from app.retrieval.prompts import RAG_PROMPT
 from app.retrieval.retriever import get_retriever
 
@@ -24,7 +25,9 @@ def run_query(question: str, collection_name: str = COLLECTION_NAME, top_k: int 
 
     llm = ChatAnthropic(model="claude-sonnet-4-6", api_key=settings.anthropic_api_key)
     chain = RAG_PROMPT | llm | StrOutputParser()
-    answer = chain.invoke({"context": _format_docs(docs), "question": question})
+    callback = get_langfuse_callback()
+    invoke_cfg = {"callbacks": [callback], "run_name": "rag-query"} if callback else {}
+    answer = chain.invoke({"context": _format_docs(docs), "question": question}, config=invoke_cfg)
 
     sources = []
     seen: set = set()

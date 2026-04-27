@@ -101,7 +101,33 @@ Swagger en: http://localhost:8000/docs
 
 ---
 
-## 5. Casos borde
+## 5. Observabilidad LangFuse (Fase D)
+
+> Requiere keys reales en `.env` (`LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`).
+> Sin keys: tracing se omite silenciosamente — app funciona igual.
+
+### 5.1 Sin keys configuradas
+- [ ] `.env` con `pk-lf-...` (placeholder)
+- [ ] `POST /query` con cualquier pregunta
+- Esperado: respuesta normal, **sin error**, tracing simplemente no ocurre
+
+### 5.2 Con keys reales
+- [ ] Configurar cuenta en https://cloud.langfuse.com (tier gratuito)
+- [ ] Añadir `LANGFUSE_PUBLIC_KEY` y `LANGFUSE_SECRET_KEY` reales al `.env`
+- [ ] Reiniciar app y hacer `POST /query`
+- Esperado: traza visible en cloud.langfuse.com con nombre `rag-query`
+
+### 5.3 Contenido de la traza
+- [ ] Abrir traza en LangFuse dashboard
+- Esperado: tokens de entrada/salida, latencia, prompt enviado, respuesta recibida
+
+### 5.4 Múltiples queries
+- [ ] Hacer 3+ queries distintas
+- Esperado: 3+ trazas en LangFuse, cada una con su pregunta
+
+---
+
+## 6. Casos borde
 
 | # | Test | Esperado |
 |---|------|----------|
@@ -119,5 +145,5 @@ Swagger en: http://localhost:8000/docs
 | A — Ingestión | ✅ `test_ingestion.py` | Pendiente ejecución |
 | B — RAG | ✅ `test_retrieval.py` | Pendiente ejecución |
 | C — CRUD API | ✅ `test_api.py` | Pendiente ejecución |
-| D — LangFuse | Pendiente | Pendiente |
+| D — LangFuse | N/A (integración externa) | Pendiente ejecución |
 | E — Docker/UI | Pendiente | Pendiente |
