@@ -8,7 +8,8 @@ from app.api.schemas import DocumentResponse
 from app.config import settings
 from app.ingestion.loaders import load_document
 from app.ingestion.chunker import chunk_documents
-from app.ingestion.embeddings import embed_and_store
+from app.ingestion.embeddings import embed_and_store, delete_by_document_id
+from app.storage import registry
 
 router = APIRouter()
 
@@ -40,19 +41,18 @@ async def upload_document(file: UploadFile = File(...)) -> DocumentResponse:
     finally:
         tmp_path.unlink(missing_ok=True)
 
-    return DocumentResponse(
-        id=doc_id,
-        filename=file.filename,
-        chunks=chunk_count,
-        uploaded_at=datetime.now(timezone.utc),
-    )
+    return registry.register(doc_id, file.filename, chunk_count)
 
 
 @router.get("/", response_model=list[DocumentResponse])
 async def list_documents() -> list[DocumentResponse]:
-    raise HTTPException(status_code=501, detail="Fase C pendiente de implementación")
+    return registry.list_all()
 
 
-@router.delete("/{document_id}")
+@router.delete("/{document_id}", status_code=200)
 async def delete_document(document_id: str) -> dict:
-    raise HTTPException(status_code=501, detail="Fase C pendiente de implementación")
+    if not registry.exists(document_id):
+        raise HTTPException(status_code=404, detail="Document not found")
+    delete_by_document_id(document_id)
+    registry.remove(document_id)
+    return {"deleted": document_id}

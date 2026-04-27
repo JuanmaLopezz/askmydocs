@@ -24,3 +24,12 @@ def embed_and_store(chunks: list[Document], collection_name: str = COLLECTION_NA
     )
     vectorstore.add_documents(chunks)
     return len(chunks)
+
+
+def delete_by_document_id(doc_id: str, collection_name: str = COLLECTION_NAME) -> None:
+    vectorstore = Chroma(
+        collection_name=collection_name,
+        embedding_function=_embeddings,
+        persist_directory=settings.chroma_persist_path,
+    )
+    vectorstore._collection.delete(where={"document_id": doc_id})
