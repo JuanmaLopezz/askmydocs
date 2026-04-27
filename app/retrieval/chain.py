@@ -4,7 +4,7 @@ from app.api.schemas import QueryResponse, Source
 from app.config import settings
 from app.ingestion.embeddings import COLLECTION_NAME
 from app.observability.tracing import get_langfuse_callback
-from app.retrieval.prompts import RAG_PROMPT
+from app.retrieval.prompts import RAG_PROMPT, NO_INFO_PHRASE
 from app.retrieval.retriever import get_retriever
 
 
@@ -28,6 +28,9 @@ def run_query(question: str, collection_name: str = COLLECTION_NAME, top_k: int 
     callback = get_langfuse_callback()
     invoke_cfg = {"callbacks": [callback], "run_name": "rag-query"} if callback else {}
     answer = chain.invoke({"context": _format_docs(docs), "question": question}, config=invoke_cfg)
+
+    if NO_INFO_PHRASE in answer:
+        return QueryResponse(answer=NO_INFO_PHRASE, sources=[])
 
     sources = []
     seen: set = set()
