@@ -72,7 +72,7 @@ with col_right:
         placeholder="¿Cuál es el importe total de la factura del mes de marzo?",
         height=100,
     )
-    top_k = st.slider("Fragmentos a recuperar (top_k)", 2, 10, 4)
+    top_k = st.slider("Fuentes a consultar", 2, 10, 4, help="Cuántos fragmentos de los documentos se analizan para generar la respuesta. Más fuentes = respuesta más completa pero más lenta.")
 
     if st.button("Preguntar", type="primary", disabled=not question.strip()):
         if not docs:
