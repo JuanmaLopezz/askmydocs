@@ -141,8 +141,6 @@ docs/                  # Roadmap, arquitectura, batería de pruebas
 
 **Juanma López** — [GitHub](https://github.com/JuanmaLopezz) · [LinkedIn](https://linkedin.com/in/juanmalopez)
 
-Data AI Engineer en construcción. Este proyecto es parte de mi portfolio de transición hacia roles de AI Engineering.
-
 ---
 
 ## Licencia
