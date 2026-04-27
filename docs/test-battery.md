@@ -127,7 +127,45 @@ Swagger en: http://localhost:8000/docs
 
 ---
 
-## 6. Casos borde
+## 6. UI Streamlit + Docker (Fase E)
+
+### 6.1 UI local (sin Docker)
+- [ ] `streamlit run app/ui/streamlit_app.py`
+- [ ] Con app FastAPI corriendo en `:8000`
+- Esperado: UI carga en http://localhost:8501, columna izquierda y derecha visibles
+
+### 6.2 Upload desde UI
+- [ ] Arrastrar PDF al file uploader → click "Indexar"
+- Esperado: spinner → mensaje ✅ con nombre y chunks → doc aparece en lista
+
+### 6.3 Lista de documentos en UI
+- [ ] Subir 2 docs
+- Esperado: ambos aparecen con nombre + número de chunks + botón 🗑
+
+### 6.4 Borrar desde UI
+- [ ] Click en 🗑 en un doc de la lista
+- Esperado: doc desaparece de la lista tras rerun
+
+### 6.5 Query desde UI
+- [ ] Escribir pregunta → click "Preguntar"
+- Esperado: respuesta aparece en markdown + sección "Fuentes" con expanders
+
+### 6.6 Docker build
+- [ ] `docker build -t askmydocs-api .`
+- [ ] `docker build -f Dockerfile.streamlit -t askmydocs-ui .`
+- Esperado: ambas imágenes construyen sin errores
+
+### 6.7 Docker Compose completo
+- [ ] `docker-compose up --build`
+- Esperado: API en :8000, UI en :8501, `/health` devuelve 200
+
+### 6.8 Flujo completo en Docker
+- [ ] Con docker-compose corriendo: subir doc desde UI → preguntar
+- Esperado: respuesta con fuentes, mismo comportamiento que local
+
+---
+
+## 7. Casos borde
 
 | # | Test | Esperado |
 |---|------|----------|
@@ -146,4 +184,4 @@ Swagger en: http://localhost:8000/docs
 | B — RAG | ✅ `test_retrieval.py` | Pendiente ejecución |
 | C — CRUD API | ✅ `test_api.py` | Pendiente ejecución |
 | D — LangFuse | N/A (integración externa) | Pendiente ejecución |
-| E — Docker/UI | Pendiente | Pendiente |
+| E — Docker/UI | N/A | Pendiente ejecución |

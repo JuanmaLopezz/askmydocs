@@ -9,8 +9,11 @@ services:
       - .env
     volumes:
       - ./data:/app/data
-    depends_on:
-      - chromadb
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   streamlit:
     build:
@@ -20,15 +23,11 @@ services:
       - "8501:8501"
     env_file:
       - .env
+    environment:
+      - API_URL=http://api:8000
     depends_on:
-      - api
-
-  chromadb:
-    image: chromadb/chroma:latest
-    ports:
-      - "8002:8000"
-    volumes:
-      - ./data/chroma:/chroma/chroma
+      api:
+        condition: service_healthy
 
 volumes:
   chroma_data:
